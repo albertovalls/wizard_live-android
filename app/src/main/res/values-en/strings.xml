@@ -1,0 +1,122 @@
+<resources>
+    <string name="app_name">Wizard Live</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Sign in</string>
+    <string name="register">Create account</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="no_account">Don’t have an account? Sign up</string>
+    <string name="have_account">Already have an account? Sign in</string>
+    <string name="terms">By continuing you accept the Terms and Privacy Policy</string>
+    <string name="remember_me">Remember me</string>
+    <string name="trending">Trending</string>
+    <string name="search">Search…</string>
+    <string name="popular">Popular</string>
+    <string name="live">LIVE</string>
+    <string name="locked">Locked</string>
+    <string name="football">Football</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_sports">Sports</string>
+    <string name="nav_profile">Profile</string>
+    <string name="broadcast_section_have_cam">If you have a WizCam</string>
+    <string name="broadcast_section_no_cam">If you don’t have a WizCam</string>
+    <string name="broadcast_have_cam_subtitle">Connect to the WizCam Wi-Fi to get started</string>
+    <string name="broadcast_no_cam_subtitle">Buy a WizCam to start streaming</string>
+
+
+    <string name="broadcast_step_cam_power_on">Turn on your WizCam</string>
+    <string name="broadcast_step_connect_wifi">Connect to its Wi-Fi network (WizCam-XXXX)</string>
+    <string name="broadcast_step_return_app">Return to the app and start streaming</string>
+    <!-- Sports -->
+    <string name="categories">Categories</string>
+    <string name="explore_sports">Explore sports broadcasts</string>
+
+    <string name="streams">%1$d streams</string>
+    <string name="viewers">%1$s viewers</string>
+
+    <!-- Broadcast -->
+    <string name="broadcast_icon_description">Broadcast</string>
+    <string name="broadcast_title">Broadcast</string>
+    <string name="broadcast_subtitle">Choose your setup to get started</string>
+
+
+    <string name="broadcast_tip">Tip: keep your phone close to the camera and make sure network permissions are granted.</string>
+
+
+    <!-- WizardCam section -->
+    <string name="broadcast_wifi_icon_description">Wi-Fi</string>
+    <string name="broadcast_badge_have_cam">Step 1</string>
+    <string name="broadcast_have_cam_title">I have a WizardCam</string>
+    <string name="broadcast_have_cam_body">To start streaming, connect to the WizCam Wi-Fi network (for example: “WizCam-XXXX”).</string>
+    <string name="broadcast_open_wifi_settings">Open Wi-Fi settings</string>
+
+
+    <!-- No WizardCam section -->
+    <string name="broadcast_shop_icon_description">Shop</string>
+
+    <string name="broadcast_no_cam_title">I don’t have a WizardCam</string>
+    <string name="broadcast_no_cam_body">You need a WizardCam to stream. Get one and come back here to start broadcasting.</string>
+    <string name="broadcast_buy_wizardcam">Buy a WizardCam</string>
+
+    <!-- Sports names -->
+
+    <string name="basketball">Basketball</string>
+    <string name="tennis">Tennis</string>
+    <string name="boxing">Boxing</string>
+    <string name="volleyball">Volleyball</string>
+    <string name="handball">Handball</string>
+    <string name="swimming">Swimming</string>
+    <string name="table_tennis">Table tennis</string>
+    <string name="events_title">Events</string>
+    <string name="events_empty_message">Upcoming events will appear here</string>
+
+    <!-- Filters -->
+    <string name="events_filter_all">All</string>
+    <string name="events_filter_premieres">Premieres</string>
+    <string name="events_filter_watch_parties">Watch Parties</string>
+    <string name="events_filter_qa">Q&amp;A</string>
+    <string name="events_filter_drops">Drops</string>
+    <string name="events_filter_community">Community</string>
+    <string name="broadcast_badge_with_cam">With WizardCam</string>
+    <string name="broadcast_badge_no_cam">No WizardCam</string>
+    <!-- Sections -->
+    <string name="events_section_live_title">Live now</string>
+    <string name="events_section_live_subtitle">Happening on the platform right now</string>
+
+    <string name="events_section_upcoming_title">Upcoming</string>
+    <string name="events_section_upcoming_subtitle">Scheduled events you may like</string>
+
+    <string name="events_section_featured_title">Featured</string>
+    <string name="events_section_featured_subtitle">Premieres, drops and curated moments</string>
+
+    <!-- Badges -->
+    <string name="events_badge_live">LIVE</string>
+    <string name="events_badge_soon">SOON</string>
+    <string name="events_badge_hot">HOT</string>
+
+    <!-- Actions -->
+    <string name="events_action_view">View</string>
+    <string name="error_missing_fields">Please fill in all required fields</string>
+    <string name="error_invalid_credentials">Incorrect credentials</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+
+    <string name="followers">Followers</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="nav_events">Events</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="error_password_length">Password must be at least 8 characters</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="register_success_title">Registration successful</string>
+    <string name="register_success_message">Please verify your email address</string>
+    <string name="login_failed_title">Login failed</string>
+    <string name="register_failed_title">Registration failed</string>
+    <string name="register_failed_message">The registration could not be completed</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+    <string name="password_recovery_success">
+    Password recovery email sent. Please check your inbox.
+</string>
+    <string name="nav_broadcast">Stream</string>
+    <string name="user_not_found">User not found</string>
+</resources>

@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">Wizard Live</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Crear cuenta</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="no_account">¿No tienes cuenta? Regístrate</string>
+    <string name="have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="terms">Al continuar aceptas los Términos y la Política de Privacidad</string>
+    <string name="remember_me">Recuérdame</string>
+    <string name="trending">Tendencias</string>
+    <string name="search">Buscar…</string>
+    <string name="popular">Popular</string>
+    <string name="live">EN DIRECTO</string>
+    <string name="locked">Bloqueado</string>
+    <string name="football">Fútbol</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_sports">Deportes</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="categories">Categorías</string>
+    <string name="explore_sports">Explora retransmisiones deportivas</string>
+    <string name="events_title">Eventos</string>
+    <string name="events_empty_message">Aquí aparecerán los próximos eventos</string>
+    <string name="streams">%1$d directos</string>
+    <string name="viewers">%1$s espectadores</string>
+
+
+    <!-- Filters -->
+    <string name="events_filter_all">Todos</string>
+    <string name="events_filter_premieres">Estrenos</string>
+    <string name="events_filter_watch_parties">Watch Parties</string>
+    <string name="events_filter_qa">Q&amp;A</string>
+    <string name="events_filter_drops">Drops</string>
+    <string name="events_filter_community">Comunidad</string>
+
+    <!-- Sections -->
+    <string name="events_section_live_title">En vivo ahora</string>
+    <string name="events_section_live_subtitle">Ocurriendo en la plataforma ahora mismo</string>
+
+    <string name="events_section_upcoming_title">Próximamente</string>
+    <string name="events_section_upcoming_subtitle">Eventos programados que te pueden interesar</string>
+
+    <string name="events_section_featured_title">Destacados</string>
+    <string name="events_section_featured_subtitle">Estrenos, drops y momentos curados</string>
+
+    <!-- Badges -->
+    <string name="events_badge_live">LIVE</string>
+    <string name="events_badge_soon">PRONTO</string>
+    <string name="events_badge_hot">TOP</string>
+
+    <!-- Broadcast -->
+    <string name="broadcast_icon_description">Broadcast</string>
+    <string name="broadcast_title">Retransmisión</string>
+    <string name="broadcast_subtitle">Elige tu caso para empezar</string>
+    <string name="broadcast_badge_with_cam">Con WizardCam</string>
+    <string name="broadcast_badge_no_cam">Sin WizardCam</string>
+
+    <string name="broadcast_tip">Consejo: mantén el móvil cerca de la cámara y comprueba los permisos de red.</string>
+    <string name="broadcast_have_cam_subtitle">Conéctate a la Wi-Fi de la WizCam para empezar</string>
+    <string name="broadcast_no_cam_subtitle">Compra una WizardCam para retransmitir</string>
+    <string name="broadcast_section_have_cam">Si tienes una WizardCam</string>
+    <string name="broadcast_section_no_cam">Si no tienes WizardCam</string>
+
+    <string name="broadcast_step_cam_power_on">Enciende la WizardCam</string>
+    <string name="broadcast_step_connect_wifi">Conéctate a su red Wi-Fi (WizCam-XXXX)</string>
+    <string name="broadcast_step_return_app">Vuelve a la app y empieza a emitir</string>
+
+    <!-- WizardCam section -->
+    <string name="broadcast_wifi_icon_description">Wi-Fi</string>
+    <string name="broadcast_badge_have_cam">Paso 1</string>
+    <string name="broadcast_have_cam_title">Tengo una WizCam</string>
+    <string name="broadcast_have_cam_body">Para empezar a retransmitir, conéctate a la red Wi-Fi de la WizCam (por ejemplo: “WizCam-XXXX”).</string>
+    <string name="broadcast_open_wifi_settings">Abrir ajustes Wi-Fi</string>
+
+
+    <!-- No WizardCam section -->
+    <string name="broadcast_shop_icon_description">Comprar</string>
+
+    <string name="broadcast_no_cam_title">No tengo WizCam</string>
+    <string name="broadcast_no_cam_body">Necesitas una WizCam para retransmitir. Consigue una y vuelve aquí para empezar.</string>
+    <string name="broadcast_buy_wizardcam">Comprar WizCam</string>
+
+    <!-- Actions -->
+    <string name="events_action_view">Ver</string>
+    <!-- Sports names -->
+
+    <string name="basketball">Baloncesto</string>
+    <string name="tennis">Tenis</string>
+    <string name="boxing">Boxeo</string>
+    <string name="volleyball">Voleibol</string>
+    <string name="handball">Balonmano</string>
+    <string name="swimming">Natación</string>
+    <string name="table_tennis">Tenis de mesa</string>
+
+    <string name="error_missing_fields">Faltan campos por rellenar</string>
+    <string name="error_invalid_credentials">Credenciales incorrectas</string>
+    <string name="error_generic">Ha ocurrido un error. Inténtalo de nuevo.</string>
+
+    <string name="followers">Seguidores</string>
+    <string name="subscriptions">Suscripciones</string>
+    <string name="nav_events">Eventos</string>
+    <string name="username">Usuario</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="error_password_length">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="error_password_mismatch">Las contraseñas no coinciden</string>
+    <string name="register_success_title">Registro exitoso</string>
+    <string name="register_success_message">Verifica tu correo electrónico</string>
+    <string name="login_failed_title">Inicio de sesión fallido</string>
+    <string name="register_failed_title">Registro fallido</string>
+    <string name="register_failed_message">No se pudo completar el registro</string>
+
+    <string name="password_recovery_success">
+    Correo de recuperación enviado. Revisa tu bandeja de entrada.
+</string>
+    <string name="user_not_found">Usuario no encontrado</string>
+    <string name="send">Enviar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="nav_broadcast">Emitir</string>
+</resources>
