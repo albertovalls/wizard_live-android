@@ -22,8 +22,12 @@
     <string name="broadcast_section_no_cam">If you don’t have a WizCam</string>
     <string name="broadcast_have_cam_subtitle">Connect to the WizCam Wi-Fi to get started</string>
     <string name="broadcast_no_cam_subtitle">Buy a WizCam to start streaming</string>
-
-
+    <string name="viewers_now">%1$d watching now</string>
+    <string name="connection_connected">🟢 Connected</string>
+    <string name="connection_disconnected">🔴 Disconnected</string>
+    <string name="chat_placeholder">Type a message…</string>
+    <string name="connecting_chat">Connecting to chat...</string>
+    <string name="live_streaming">Live Streaming</string>
     <string name="broadcast_step_cam_power_on">Turn on your WizCam</string>
     <string name="broadcast_step_connect_wifi">Connect to its Wi-Fi network (WizCam-XXXX)</string>
     <string name="broadcast_step_return_app">Return to the app and start streaming</string>
@@ -33,6 +37,7 @@
 
     <string name="streams">%1$d streams</string>
     <string name="viewers">%1$s viewers</string>
+    <string name="no_streams_available">No streams available</string>
 
     <!-- Broadcast -->
     <string name="broadcast_icon_description">Broadcast</string>

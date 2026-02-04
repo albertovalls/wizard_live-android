@@ -109,12 +109,21 @@
     <string name="login_failed_title">Inicio de sesión fallido</string>
     <string name="register_failed_title">Registro fallido</string>
     <string name="register_failed_message">No se pudo completar el registro</string>
+    <string name="no_streams_available">No hay streams disponibles</string>
 
     <string name="password_recovery_success">
     Correo de recuperación enviado. Revisa tu bandeja de entrada.
 </string>
     <string name="user_not_found">Usuario no encontrado</string>
-    <string name="send">Enviar</string>
+    <string name="connecting_chat">Conectando al chat...</string>
+    <string name="live_streaming">Streaming en directo</string>
     <string name="cancel">Cancelar</string>
     <string name="nav_broadcast">Emitir</string>
+
+
+    <string name="viewers_now">%1$d viendo ahora</string>
+    <string name="connection_connected">🟢 Conectado</string>
+    <string name="connection_disconnected">🔴 Desconectado</string>
+    <string name="chat_placeholder">Escribe un mensaje…</string>
+    <string name="send">Enviar</string>
 </resources>

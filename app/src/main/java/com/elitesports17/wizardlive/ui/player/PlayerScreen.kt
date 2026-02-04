@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -20,16 +21,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
+import com.elitesports17.wizardlive.R
 import com.elitesports17.wizardlive.ui.chat.LiveChat
 import com.elitesports17.wizardlive.ui.util.UserSession
 import com.google.android.gms.cast.framework.CastButtonFactory
@@ -48,17 +54,35 @@ fun PlayerScreen(
     val context = LocalContext.current
     val activity = context as FragmentActivity
 
+    // Oculta ActionBar + StatusBar mientras esta pantalla está visible
+    DisposableEffect(Unit) {
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+
+        val window = activity.window
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.statusBars())
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+        onDispose {
+            controller.show(WindowInsetsCompat.Type.statusBars())
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+            (activity as? AppCompatActivity)?.supportActionBar?.show()
+        }
+    }
+
     var isFullscreen by remember { mutableStateOf(false) }
     var controlsVisible by remember { mutableStateOf(true) }
     var token by remember { mutableStateOf("") }
 
-    /* ================= TOKEN ================= */
+    // Ajuste: baja el contenedor del video SOLO cuando NO es fullscreen
+    val videoTopMargin = 40.dp
 
     LaunchedEffect(Unit) {
         token = UserSession.getToken(context) ?: ""
     }
-
-    /* ================= FULLSCREEN / ORIENTATION ================= */
 
     DisposableEffect(isFullscreen) {
         if (isFullscreen) {
@@ -70,8 +94,6 @@ fun PlayerScreen(
         }
         onDispose {}
     }
-
-    /* ================= EXOPLAYER ================= */
 
     val player = remember {
         ExoPlayer.Builder(context).build().apply {
@@ -85,26 +107,15 @@ fun PlayerScreen(
         onDispose { player.release() }
     }
 
-    /* ================= CAST ================= */
-
     val castContext = remember { CastContext.getSharedInstance(context) }
 
     DisposableEffect(Unit) {
         val sessionManager = castContext.sessionManager
 
         val listener = object : SessionManagerListener<CastSession> {
-            override fun onSessionStarted(session: CastSession, sessionId: String) {
-                player.pause()
-            }
-
-            override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) {
-                player.pause()
-            }
-
-            override fun onSessionEnded(session: CastSession, error: Int) {
-                player.play()
-            }
-
+            override fun onSessionStarted(session: CastSession, sessionId: String) { player.pause() }
+            override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) { player.pause() }
+            override fun onSessionEnded(session: CastSession, error: Int) { player.play() }
             override fun onSessionStarting(session: CastSession) {}
             override fun onSessionStartFailed(session: CastSession, error: Int) {}
             override fun onSessionEnding(session: CastSession) {}
@@ -119,17 +130,9 @@ fun PlayerScreen(
         }
     }
 
-    /* ================= BACK ================= */
-
     BackHandler {
-        if (isFullscreen) {
-            isFullscreen = false
-        } else {
-            onBack()
-        }
+        if (isFullscreen) isFullscreen = false else onBack()
     }
-
-    /* ================= UI ================= */
 
     Box(
         modifier = Modifier
@@ -140,100 +143,108 @@ fun PlayerScreen(
 
             /* ================= VIDEO ================= */
 
+
             Box(
                 modifier = if (isFullscreen) {
                     Modifier.fillMaxSize()
                 } else {
                     Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
+                        .padding(top = videoTopMargin)
                 }
             ) {
 
-                AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = { ctx ->
-                        PlayerView(ctx).apply {
-                            setPlayer(player)
-                            useController = true
-                            controllerAutoShow = true
-                            controllerHideOnTouch = true
-                            controllerShowTimeoutMs = 1300
-                            // 🔥 SINCRONIZA CON CONTROLES NATIVOS
-                            setControllerVisibilityListener(
-                                PlayerView.ControllerVisibilityListener { visibility ->
-                                    controlsVisible = visibility == View.VISIBLE
-                                }
-                            )
-
-                            layoutParams = ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT
-                            )
-                        }
-                    }
-                )
-
-                /* ================= TOP BAR ================= */
-
-                if (controlsVisible) {
-                    Row(
-                        modifier = Modifier
+                Box(
+                    modifier = if (isFullscreen) {
+                        Modifier.fillMaxSize()
+                    } else {
+                        Modifier
                             .fillMaxWidth()
-                            .background(Color.Black.copy(alpha = 0.6f))
-                            .padding(12.dp)
-                            .align(Alignment.TopStart),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                            .aspectRatio(16f / 9f)
+                    }
+                ) {
 
-                        IconButton(
-                            onClick = {
-                                if (isFullscreen) isFullscreen = false else onBack()
+                    AndroidView(
+                        modifier = Modifier.fillMaxSize(),
+                        factory = { ctx ->
+                            PlayerView(ctx).apply {
+                                setPlayer(player)
+                                useController = true
+                                controllerAutoShow = true
+                                controllerHideOnTouch = true
+                                controllerShowTimeoutMs = 1300
+                                setControllerVisibilityListener(
+                                    PlayerView.ControllerVisibilityListener { visibility ->
+                                        controlsVisible = visibility == View.VISIBLE
+                                    }
+                                )
+
+                                layoutParams = ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
                             }
-                        ) {
-                            Icon(Icons.Outlined.Close, null, tint = Color.White)
                         }
+                    )
 
-                        Spacer(Modifier.weight(1f))
+                    /* ================= TOP BAR (más fina) ================= */
 
-                        AndroidView(
-                            modifier = Modifier.size(32.dp),
-                            factory = {
-                                val appCtx = ContextThemeWrapper(
-                                    activity,
-                                    androidx.appcompat.R.style.Theme_AppCompat_DayNight_NoActionBar
-                                )
-                                val routerCtx = ContextThemeWrapper(
-                                    appCtx,
-                                    androidx.mediarouter.R.style.Theme_MediaRouter
-                                )
-
-                                MediaRouteButton(
-                                    routerCtx,
-                                    null,
-                                    androidx.mediarouter.R.attr.mediaRouteButtonStyle
-                                ).apply {
-                                    CastButtonFactory.setUpMediaRouteButton(routerCtx, this)
-                                }
-                            }
-                        )
-
-                        Spacer(Modifier.width(8.dp))
-
-                        IconButton(
-                            onClick = {
-                                isFullscreen = !isFullscreen
-                                controlsVisible = true
-                            }
+                    if (controlsVisible) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Black.copy(alpha = 0.45f))
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                                .align(Alignment.TopStart),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                if (isFullscreen)
-                                    Icons.Outlined.FullscreenExit
-                                else
-                                    Icons.Outlined.Fullscreen,
-                                null,
-                                tint = Color.White
+
+                            IconButton(
+                                modifier = Modifier.size(36.dp),
+                                onClick = { if (isFullscreen) isFullscreen = false else onBack() }
+                            ) {
+                                Icon(Icons.Outlined.Close, null, tint = Color.White)
+                            }
+
+                            Spacer(Modifier.weight(1f))
+
+                            AndroidView(
+                                modifier = Modifier.size(28.dp),
+                                factory = {
+                                    val appCtx = ContextThemeWrapper(
+                                        activity,
+                                        androidx.appcompat.R.style.Theme_AppCompat_DayNight_NoActionBar
+                                    )
+                                    val routerCtx = ContextThemeWrapper(
+                                        appCtx,
+                                        androidx.mediarouter.R.style.Theme_MediaRouter
+                                    )
+
+                                    MediaRouteButton(
+                                        routerCtx,
+                                        null,
+                                        androidx.mediarouter.R.attr.mediaRouteButtonStyle
+                                    ).apply {
+                                        CastButtonFactory.setUpMediaRouteButton(routerCtx, this)
+                                    }
+                                }
                             )
+
+                            Spacer(Modifier.width(8.dp))
+
+                            IconButton(
+                                modifier = Modifier.size(36.dp),
+                                onClick = {
+                                    isFullscreen = !isFullscreen
+                                    controlsVisible = true
+                                }
+                            ) {
+                                Icon(
+                                    if (isFullscreen) Icons.Outlined.FullscreenExit else Icons.Outlined.Fullscreen,
+                                    null,
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
                 }
@@ -256,7 +267,7 @@ fun PlayerScreen(
                             fontSize = 18.sp
                         )
                         Text(
-                            text = "Streaming en directo",
+                            text = stringResource(R.string.live_streaming),
                             color = Color.LightGray,
                             fontSize = 13.sp
                         )
@@ -290,7 +301,7 @@ fun PlayerScreen(
                             )
                         } else {
                             Text(
-                                "Conectando al chat…",
+                                text = stringResource(R.string.connecting_chat),
                                 color = Color.Gray,
                                 fontSize = 12.sp
                             )

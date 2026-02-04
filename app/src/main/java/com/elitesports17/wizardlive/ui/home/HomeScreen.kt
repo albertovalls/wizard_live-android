@@ -408,7 +408,7 @@ private fun WizardSection(
 
             is WizardUiState.Empty -> {
                 Text(
-                    text = "No hay streams disponibles",
+                    text = stringResource(R.string.no_streams_available),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )

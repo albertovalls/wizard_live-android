@@ -221,26 +221,26 @@ fun LoginScreen(
                 ) {
 
                     if (!isLogin) {
-                        OutlinedTextField(
-                            value = username,
-                            onValueChange = { username = it },
-                            enabled = uiState !is LoginUiState.Loading,
-                            label = { Text(stringResource(R.string.username)) },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-                                focusedBorderColor = Color(0xFFB983FF),
-                                unfocusedBorderColor = Color.DarkGray,
-                                cursorColor = Color(0xFFB983FF),
-                                focusedLabelColor = Color(0xFFB983FF),
-                                unfocusedLabelColor = Color.Gray
-                            )
+                    OutlinedTextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        enabled = uiState !is LoginUiState.Loading,
+                        label = { Text(stringResource(R.string.username)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color(0xFFB983FF),
+                            unfocusedBorderColor = Color.DarkGray,
+                            cursorColor = Color(0xFFB983FF),
+                            focusedLabelColor = Color(0xFFB983FF),
+                            unfocusedLabelColor = Color.Gray
                         )
+                    )
 
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
 
 
                     OutlinedTextField(
@@ -340,10 +340,10 @@ fun LoginScreen(
                                 Checkbox(
                                     checked = rememberMe,
                                     onCheckedChange = { rememberMe = it },
-                                    modifier = Modifier.padding(0.dp) // 👈 elimina padding extra
+                                    modifier = Modifier.padding(0.dp) //
                                 )
 
-                                Spacer(modifier = Modifier.width(0.dp)) // 👈 mucho más pegado
+                                Spacer(modifier = Modifier.width(0.dp)) //
 
                                 Text(
                                     text = stringResource(R.string.remember_me),

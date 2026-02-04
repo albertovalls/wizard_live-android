@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.*
@@ -15,12 +14,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.elitesports17.wizardlive.ui.chat.ViewersViewModel
-
+import com.elitesports17.wizardlive.R
 
 @Composable
 fun LiveChat(
@@ -34,9 +33,7 @@ fun LiveChat(
     var connected by remember { mutableStateOf(false) }
     val viewersViewModel: ViewersViewModel = viewModel()
 
-    val cleanToken = remember(token) {
-        token.removePrefix("Bearer ").trim()
-    }
+    val cleanToken = remember(token) { token.removePrefix("Bearer ").trim() }
 
     val wsUrl = remember {
         "wss://livewizard.westeurope.cloudapp.azure.com/ws" +
@@ -48,37 +45,25 @@ fun LiveChat(
             url = wsUrl,
             onViewersChanged = { count ->
                 viewers = count
-                viewersViewModel.update(room, count) // 🔥 CLAVE
+                viewersViewModel.update(room, count)
             },
-            onMessageReceived = { msg ->
-                messages.add(msg)
-            },
-            onConnectionState = { state ->
-                connected = state
-            }
+            onMessageReceived = { msg -> messages.add(msg) },
+            onConnectionState = { state -> connected = state }
         )
     }
 
-    // 🔌 Conectar / desconectar WS
     DisposableEffect(Unit) {
         socket.connect()
-        onDispose {
-            socket.disconnect()
-        }
+        onDispose { socket.disconnect() }
     }
 
-    // ⬇️ Auto-scroll al último mensaje
     LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.lastIndex)
-        }
+        if (messages.isNotEmpty()) listState.animateScrollToItem(messages.lastIndex)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 Icons.Outlined.Visibility,
                 contentDescription = null,
@@ -87,23 +72,21 @@ fun LiveChat(
             )
             Spacer(Modifier.width(6.dp))
             Text(
-                "$viewers viendo ahora",
+                text = stringResource(R.string.viewers_now, viewers),
                 color = Color.LightGray,
                 fontSize = 12.sp
             )
         }
 
-
-        // 🟢 Estado conexión
         Text(
-            text = if (connected) "🟢 Conectado" else "🔴 Desconectado",
+            text = if (connected) stringResource(R.string.connection_connected)
+            else stringResource(R.string.connection_disconnected),
             color = if (connected) Color.Green else Color.Red,
             fontSize = 12.sp
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 💬 MENSAJES
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -112,15 +95,13 @@ fun LiveChat(
         ) {
             items(messages) { msg ->
                 Column(modifier = Modifier.padding(vertical = 4.dp)) {
-
                     Text(
-                        text = msg.nick,        // ✅ CORRECTO
+                        text = msg.nick,
                         color = Color(0xFFB983FF),
                         fontSize = 12.sp
                     )
-
                     Text(
-                        text = msg.text,     // ✅ CORRECTO
+                        text = msg.text,
                         color = Color.White,
                         fontSize = 14.sp
                     )
@@ -130,7 +111,6 @@ fun LiveChat(
 
         Divider(color = Color.DarkGray)
 
-        // ✍️ INPUT
         Row(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -139,7 +119,7 @@ fun LiveChat(
                 value = input,
                 onValueChange = { input = it },
                 modifier = Modifier.weight(1f),
-                placeholder = { Text("Escribe un mensaje…") },
+                placeholder = { Text(stringResource(R.string.chat_placeholder)) },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFF1E1E1E),
                     unfocusedContainerColor = Color(0xFF1E1E1E),
@@ -153,10 +133,7 @@ fun LiveChat(
             Button(
                 enabled = connected && input.isNotBlank(),
                 onClick = {
-                    socket.sendMessage(
-                        text = input,
-                        nick = room
-                    )
+                    socket.sendMessage(text = input, nick = room)
                     input = ""
                 },
                 shape = RoundedCornerShape(50),
@@ -174,13 +151,12 @@ fun LiveChat(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "Enviar",
+                    text = stringResource(R.string.send),
                     color = Color.White,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
-
         }
     }
 }
