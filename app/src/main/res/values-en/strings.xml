@@ -119,9 +119,58 @@
     <string name="register_failed_message">The registration could not be completed</string>
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
-    <string name="password_recovery_success">
-    Password recovery email sent. Please check your inbox.
-</string>
+    <string name="password_recovery_success">Email sent to your email</string>
+
+    <string name="nav_back">Back</string>
+
+    <string name="perf_warning_title">Performance warning</string>
+    <string name="perf_warning_body">Enabling preview may reduce performance and FPS. Use it only when necessary.</string>
+    <string name="perf_warning_enabling">Enabling…</string>
+    <string name="perf_warning_confirm">Got it, enable</string>
+
+
+    <string name="wizcam_detected">Wizcam detected</string>
+    <string name="account_at">Account: @%1$s</string>
+    <string name="wizard_account_not_configured">Wizard account not configured</string>
+
+    <string name="preview">PREVIEW</string>
+    <string name="stopping">Stopping…</string>
+    <string name="hide">Hide</string>
+
+    <string name="preview_disabled">Preview disabled</string>
+    <string name="preview_disabled_hint">Hidden by default to save resources.</string>
+    <string name="view_preview">View preview</string>
+
+    <string name="battery">Battery</string>
+    <string name="temp">Temp</string>
+    <string name="wizard_status">Wizard: %1$s</string>
+
+    <string name="starting">Starting…</string>
+    <string name="connecting">Connecting…</string>
+    <string name="live_now">Live</string>
+    <string name="start_live">Start live</string>
+    <string name="stop">Stop</string>
+
+    <string name="wizard_live">Wizard Live</string>
+    <string name="streaming_and_preview">Streaming and preview</string>
+
+    <string name="wizcam_not_detected">I can’t detect the Wizcam</string>
+    <string name="connect_to_wizcam_wifi">Connect to the Wizcam Wi-Fi</string>
+    <string name="wizcam_offline_title">WizCam not detected</string>
+    <string name="wizcam_offline_body">If you already have a WizCam, connect to your WizCam Wi-Fi network to continue.</string>
+    <string name="wizcam_offline_tip">Tip: Open Settings &gt; Wi-Fi and select your WizCam network.</string>
+    <string name="wizcam_offline_no_device">Don’t have a WizCam yet?</string>
+    <string name="wizcam_offline_buy_button">Buy WizCam</string>
+    <string name="wizcam_offline_have_title">Already have a WizCam?</string>
+    <string name="wizcam_offline_have_body">Connect to your WizCam Wi-Fi network to continue.</string>
+
+    <string name="wizcam_offline_open_wifi_button">Open Wi-Fi settings</string>
+
+    <string name="wizcam_offline_no_device_title">Don’t have a WizCam yet?</string>
+    <string name="wizcam_offline_no_device_body">Get your WizCam to start streaming with Wizard Live.</string>
+
+    <string name="preview_label">PREVIEW</string>
+    <string name="preview_load_failed">Preview couldnt be loaded. Please try again.</string>
     <string name="nav_broadcast">Stream</string>
     <string name="user_not_found">User not found</string>
 </resources>

@@ -1,43 +1,104 @@
 package com.elitesports17.wizardlive.ui.broadcast
 
-import androidx.compose.animation.core.*
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BatteryFull
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.StopCircle
+import androidx.compose.material.icons.filled.Thermostat
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.elitesports17.wizardlive.R
 import com.elitesports17.wizardlive.data.model.BroadcastViewModel
+import com.elitesports17.wizardlive.data.model.StreamingNotification
 import kotlinx.coroutines.delay
 import kotlin.math.max
-import android.Manifest
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
-import com.elitesports17.wizardlive.data.model.StreamingNotification
 
 private val WizardPurple = Color(0xFF6A38EF)
 private val LiveRed = Color(0xFFFF3B30)
 private val CardBg = Color(0xFF0F0F10)
 private val Stroke = Color(0xFF242424)
 private val Muted = Color(0xFFBDBDBD)
+
+// TODO: pon la URL final cuando la tengáis
+private const val BUY_WIZCAM_URL = "https://example.com"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +107,10 @@ fun BroadcastScreen(navController: NavHostController) {
     val ui by vm.ui.collectAsState()
     val context = LocalContext.current
 
-// Permiso notificaciones (Android 13+)
+    // ✅ NUEVO: estado del título del stream
+    var streamTitle by rememberSaveable { mutableStateOf("") }
+
+    // Permiso notificaciones (Android 13+)
     val notifPermLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { /* no hace falta nada */ }
@@ -65,11 +129,8 @@ fun BroadcastScreen(navController: NavHostController) {
     // Live timer
     val isLive = ui.status?.status == "6"
     LaunchedEffect(isLive) {
-        if (isLive) {
-            StreamingNotification.showStreamingOn(context)
-        } else {
-            StreamingNotification.showStreamingOff(context)
-        }
+        if (isLive) StreamingNotification.showStreamingOn(context)
+        else StreamingNotification.showStreamingOff(context)
     }
 
     var liveStartMs by remember { mutableStateOf(0L) }
@@ -96,8 +157,8 @@ fun BroadcastScreen(navController: NavHostController) {
         AlertDialog(
             onDismissRequest = { if (!ui.previewBusy) showPreviewDialog = false },
             icon = { Icon(Icons.Filled.Warning, contentDescription = null, tint = Color(0xFFFFB74D)) },
-            title = { Text("Aviso de rendimiento") },
-            text = { Text("Activar la preview puede bajar el rendimiento y el FPS. Úsala solo cuando sea necesario.") },
+            title = { Text(stringResource(R.string.perf_warning_title)) },
+            text = { Text(stringResource(R.string.perf_warning_body)) },
             confirmButton = {
                 TextButton(
                     enabled = !ui.previewBusy,
@@ -109,19 +170,20 @@ fun BroadcastScreen(navController: NavHostController) {
                     if (ui.previewBusy) {
                         CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Activando…")
+                        Text(stringResource(R.string.perf_warning_enabling))
                     } else {
-                        Text("Entendido, activar")
+                        Text(stringResource(R.string.perf_warning_confirm))
                     }
                 }
             },
             dismissButton = {
-                TextButton(enabled = !ui.previewBusy, onClick = { showPreviewDialog = false }) { Text("Cancelar") }
+                TextButton(enabled = !ui.previewBusy, onClick = { showPreviewDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
             }
         )
     }
 
-    // Cuando ya está activa, cerramos el dialog
     LaunchedEffect(ui.previewActive) {
         if (ui.previewActive) showPreviewDialog = false
     }
@@ -139,12 +201,18 @@ fun BroadcastScreen(navController: NavHostController) {
                     )
             ) {
                 CenterAlignedTopAppBar(
-                    title = { Text("Broadcast", color = Color.White, fontWeight = FontWeight.SemiBold) },
+                    title = {
+                        Text(
+                            stringResource(R.string.broadcast_title),
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(R.string.nav_back),
                                 tint = Color.White
                             )
                         }
@@ -165,8 +233,12 @@ fun BroadcastScreen(navController: NavHostController) {
         ) {
             HeaderPro()
 
+            // ✅ OFFLINE: 2 cards separadas + botón Wi-Fi
             if (!ui.connectedToWizardCam) {
-                OfflineCard(ui.error)
+                OfflineWizardCamCards(
+                    onWifiSettings = { openWifiSettings(context) },
+                    onBuyClick = { openUrl(context, BUY_WIZCAM_URL) }
+                )
                 return@Column
             }
 
@@ -179,38 +251,128 @@ fun BroadcastScreen(navController: NavHostController) {
                 isLive = isLive,
                 elapsedText = formatElapsed(elapsedSec),
                 busy = ui.streamingBusy,
-
-                // preview
+                titleBusy = ui.titleBusy,
                 previewBusy = ui.previewBusy,
                 previewActive = ui.previewActive,
                 onShowPreviewClick = { showPreviewDialog = true },
                 onHidePreviewClick = { vm.stopPreview() },
                 previewError = ui.previewError ?: playerError,
+                titleError = ui.titleError,
+                error = ui.error,
+                // ✅ NUEVO: input de título
+                streamTitle = streamTitle,
+                onStreamTitleChange = { streamTitle = it },
 
-                onStart = { vm.startStreaming() },
+                // ✅ NUEVO: start ahora envía título + token y luego inicia
+                onStart = { vm.postTitleAndStart(context, streamTitle) },
+
                 onStop = { vm.stopStreaming() },
-
                 streamUrls = vm.streamUrls(),
                 onPlayerError = { playerError = it }
             )
 
-            if (!ui.error.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(18.dp))
+        }
+    }
+}
+
+@Composable
+private fun OfflineWizardCamCards(
+    onWifiSettings: () -> Unit,
+    onBuyClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(25.dp)
+    ) {
+        // Card: ya tengo WizCam
+        Surface(
+            color = Color(0xFF141414),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, Stroke),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.wizcam_offline_have_title),
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Text(
+                    text = stringResource(R.string.wizcam_offline_have_body),
+                    color = Muted,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
                 Surface(
-                    color = Color(0xFF141414),
-                    shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(1.dp, Stroke),
-                    modifier = Modifier.fillMaxWidth()
+                    color = Color(0xFF101010),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, Stroke)
                 ) {
                     Text(
-                        text = "⚠️ ${ui.error}",
-                        color = Color(0xFFFF6B6B),
+                        text = stringResource(R.string.wizcam_offline_tip),
+                        color = Color(0xFFB0B0B0),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(12.dp)
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(18.dp))
+                FilledTonalButton(
+                    onClick = onWifiSettings,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF1A1A1A),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(Icons.Filled.Settings, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.wizcam_offline_open_wifi_button))
+                }
+            }
+        }
+
+        // Card: no tengo WizCam
+        Surface(
+            color = Color(0xFF141414),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, Stroke),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.wizcam_offline_no_device_title),
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Text(
+                    text = stringResource(R.string.wizcam_offline_no_device_body),
+                    color = Muted,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Button(
+                    onClick = onBuyClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = WizardPurple, contentColor = Color.White)
+                ) {
+                    Icon(Icons.Filled.ShoppingCart, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.wizcam_offline_buy_button))
+                }
+            }
         }
     }
 }
@@ -225,28 +387,27 @@ private fun StreamingCardWizardOnly(
     isLive: Boolean,
     elapsedText: String,
     busy: Boolean,
-
+    titleBusy: Boolean,
     previewBusy: Boolean,
     previewActive: Boolean,
     onShowPreviewClick: () -> Unit,
     onHidePreviewClick: () -> Unit,
     previewError: String?,
-
+    streamTitle: String,
+    onStreamTitleChange: (String) -> Unit,
     onStart: () -> Unit,
     onStop: () -> Unit,
-
     streamUrls: List<String>,
+    titleError: String?,
+    error: String?,
     onPlayerError: (String) -> Unit
 ) {
-    // ✅ Mantener loader aunque busy baje, hasta que llegue LIVE
     var startPending by rememberSaveable { mutableStateOf(false) }
 
-    // Si ya estamos LIVE, limpiamos pendiente
     LaunchedEffect(isLive) {
         if (isLive) startPending = false
     }
 
-    // Safety timeout para no quedarse infinito
     LaunchedEffect(startPending) {
         if (startPending) {
             delay(20_000)
@@ -267,13 +428,14 @@ private fun StreamingCardWizardOnly(
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Wizcam detectada",
+                        text = stringResource(R.string.wizcam_detected),
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = if (wizardOk) "Cuenta: @$wizardUsername" else "Cuenta Wizard no configurada",
+                        text = if (wizardOk) stringResource(R.string.account_at, wizardUsername)
+                        else stringResource(R.string.wizard_account_not_configured),
                         color = if (wizardOk) Muted else Color(0xFFFFB74D),
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 1,
@@ -283,7 +445,6 @@ private fun StreamingCardWizardOnly(
                 if (isLive) LiveBadge(elapsedText = elapsedText)
             }
 
-            // Preview frame
             Surface(
                 color = Color.Black,
                 shape = RoundedCornerShape(18.dp),
@@ -293,7 +454,6 @@ private fun StreamingCardWizardOnly(
                     .height(230.dp)
             ) {
                 Box(Modifier.fillMaxSize()) {
-
                     if (previewActive) {
                         ProPreviewPlayer(
                             url = streamUrls.firstOrNull() ?: "",
@@ -301,15 +461,12 @@ private fun StreamingCardWizardOnly(
                             modifier = Modifier.fillMaxSize()
                         )
 
-                        // overlay superior + botón “Ocultar” (para la preview real)
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.TopCenter)
                                 .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(Color(0xCC000000), Color.Transparent)
-                                    )
+                                    Brush.verticalGradient(colors = listOf(Color(0xCC000000), Color.Transparent))
                                 )
                                 .padding(10.dp)
                         ) {
@@ -335,7 +492,7 @@ private fun StreamingCardWizardOnly(
                                             modifier = Modifier.size(16.dp)
                                         )
                                         Text(
-                                            "PREVIEW",
+                                            text = stringResource(R.string.preview_label),
                                             color = Color.White,
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.SemiBold
@@ -362,17 +519,16 @@ private fun StreamingCardWizardOnly(
                                             color = Color.White
                                         )
                                         Spacer(Modifier.width(8.dp))
-                                        Text("Parando…")
+                                        Text(stringResource(R.string.stopping))
                                     } else {
                                         Icon(Icons.Filled.VisibilityOff, contentDescription = null, modifier = Modifier.size(18.dp))
                                         Spacer(Modifier.width(8.dp))
-                                        Text("Ocultar")
+                                        Text(stringResource(R.string.hide))
                                     }
                                 }
                             }
                         }
                     } else {
-                        // Placeholder
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -400,13 +556,13 @@ private fun StreamingCardWizardOnly(
                                     }
                                     Column {
                                         Text(
-                                            text = "Preview desactivada",
+                                            text = stringResource(R.string.preview_disabled),
                                             color = Color.White,
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.SemiBold
                                         )
                                         Text(
-                                            text = "Oculta por defecto para ahorrar recursos.",
+                                            text = stringResource(R.string.preview_disabled_hint),
                                             color = Color(0xFF9E9E9E),
                                             style = MaterialTheme.typography.bodySmall
                                         )
@@ -431,7 +587,7 @@ private fun StreamingCardWizardOnly(
                                                 modifier = Modifier.size(18.dp)
                                             )
                                             Text(
-                                                text = previewError,
+                                                text = stringResource(R.string.preview_load_failed),
                                                 color = Color(0xFFFFD89A),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 maxLines = 2,
@@ -455,11 +611,11 @@ private fun StreamingCardWizardOnly(
                                 if (previewBusy) {
                                     CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(18.dp), color = Color.White)
                                     Spacer(Modifier.width(8.dp))
-                                    Text("Activando…")
+                                    Text(stringResource(R.string.perf_warning_enabling))
                                 } else {
                                     Icon(Icons.Filled.Visibility, contentDescription = null)
                                     Spacer(Modifier.width(8.dp))
-                                    Text("Ver preview")
+                                    Text(stringResource(R.string.view_preview))
                                 }
                             }
                         }
@@ -467,9 +623,53 @@ private fun StreamingCardWizardOnly(
                 }
             }
 
+            // ✅ NUEVO: input para título del stream
+            OutlinedTextField(
+                value = streamTitle,
+                onValueChange = onStreamTitleChange,
+                singleLine = true,
+                enabled = wizardOk && !busy && !titleBusy && !isLive,
+                label = {
+                    // si no tienes strings, puedes poner "Título del directo"
+                    Text(text = "Título del directo")
+                },
+                placeholder = {
+                    Text(text = "Escribe el título del stream…")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = WizardPurple,
+                    unfocusedBorderColor = Stroke,
+                    cursorColor = WizardPurple,
+                    focusedLabelColor = WizardPurple,
+                    unfocusedLabelColor = Muted
+                )
+            )
+
+
+            // Mostrar errores de título o streaming
+            if (!titleError.isNullOrBlank()) {
+                Text(
+                    text = titleError,
+                    color = Color(0xFFFFB74D),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
+            if (!error.isNullOrBlank()) {
+                Text(
+                    text = error,
+                    color = Color(0xFFFF6B6B),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
+
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                InfoChip(icon = Icons.Filled.BatteryFull, label = "Batería", value = "${battery}%", modifier = Modifier.weight(1f))
-                InfoChip(icon = Icons.Filled.Thermostat, label = "Temp", value = "${temp}ºC", modifier = Modifier.weight(1f))
+                InfoChip(icon = Icons.Filled.BatteryFull, label = stringResource(R.string.battery), value = "${battery}%", modifier = Modifier.weight(1f))
+                InfoChip(icon = Icons.Filled.Thermostat, label = stringResource(R.string.temp), value = "${temp}ºC", modifier = Modifier.weight(1f))
             }
 
             Surface(
@@ -478,21 +678,24 @@ private fun StreamingCardWizardOnly(
                 border = BorderStroke(1.dp, Stroke)
             ) {
                 Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("Wizard: $statusText", color = Muted, style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.wizard_status, statusText), color = Muted, style = MaterialTheme.typography.bodySmall)
+
+                    // Opcional: mostrar error del título si falla
+                    if (!previewError.isNullOrBlank()) {
+                        // ya lo enseñas arriba; aquí no hace falta
+                    }
                 }
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                val showStartLoader = (!isLive) && (busy || startPending || titleBusy)
 
-                val showStartLoader = (!isLive) && (busy || startPending)
-
-                // Botón empezar / en directo (NO clicable si ya está live)
                 Button(
                     onClick = {
                         startPending = true
                         onStart()
                     },
-                    enabled = wizardOk && !isLive && !busy && !startPending,
+                    enabled = wizardOk && !isLive && !busy && !titleBusy && !startPending,
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = WizardPurple, contentColor = Color.White)
@@ -504,13 +707,12 @@ private fun StreamingCardWizardOnly(
                             color = Color.White
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text(if (busy) "Empezando…" else "Conectando…")
+                        Text(if (busy || titleBusy) stringResource(R.string.starting) else stringResource(R.string.connecting))
                     } else {
-                        Text(if (isLive) "En directo" else "Empezar directo")
+                        Text(if (isLive) stringResource(R.string.live_now) else stringResource(R.string.start_live))
                     }
                 }
 
-                // Botón parar SOLO si está live
                 if (isLive) {
                     FilledTonalButton(
                         onClick = onStop,
@@ -524,7 +726,7 @@ private fun StreamingCardWizardOnly(
                     ) {
                         Icon(Icons.Filled.StopCircle, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Parar")
+                        Text(stringResource(R.string.stop))
                     }
                 }
             }
@@ -550,8 +752,8 @@ private fun HeaderPro() {
         }
 
         Column(modifier = Modifier.weight(1f)) {
-            Text("Wizard Live", color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
-            Text("Streaming y preview", color = Color(0xFFB0B0B0), style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.wizard_live), color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.streaming_and_preview), color = Color(0xFFB0B0B0), style = MaterialTheme.typography.bodyMedium)
         }
     }
     Spacer(Modifier.height(10.dp))
@@ -559,23 +761,8 @@ private fun HeaderPro() {
 }
 
 @Composable
-private fun OfflineCard(error: String?) {
-    Surface(
-        color = Color(0xFF141414),
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Stroke),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("No detecto la Wizcam", color = Color.White, fontWeight = FontWeight.SemiBold)
-            Text(error ?: "Conéctate al WiFi de la Wizcam", color = Color(0xFF9E9E9E))
-        }
-    }
-}
-
-@Composable
 private fun InfoChip(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     label: String,
     value: String,
     modifier: Modifier = Modifier
@@ -650,4 +837,27 @@ private fun formatElapsed(seconds: Long): String {
     val mm = (s % 3600) / 60
     val ss = s % 60
     return if (hh > 0) "%02d:%02d:%02d".format(hh, mm, ss) else "%02d:%02d".format(mm, ss)
+}
+
+private fun openUrl(context: Context, url: String) {
+    runCatching {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    }
+}
+
+private fun openWifiSettings(context: Context) {
+    runCatching {
+        val intent = Intent(Settings.ACTION_WIFI_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    }.recoverCatching {
+        val fallback = Intent(Settings.ACTION_WIRELESS_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(fallback)
+    }
 }

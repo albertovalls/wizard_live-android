@@ -1,5 +1,6 @@
 package com.elitesports17.wizardlive.data.model
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -57,7 +58,7 @@ class JetsonApi(
     private val previewStatusUrl get() = "$baseUrl/preview_status"
     private val startPreviewUrl get() = "$baseUrl/start_preview"
     private val togglePreviewUrl get() = "$baseUrl/toggle_preview"
-
+    private val updateStreamTitleUrl get() = "$baseUrl/update_stream_title"
     private val startCamsUrl get() = "$baseUrl/start_cams"
     private val camsStatusUrl get() = "$baseUrl/cams_status"
 
@@ -132,6 +133,29 @@ class JetsonApi(
             CamsInfo(running = guessCamsRunning(j), message = j.optString("message", ""))
         }
     }
+
+
+
+    suspend fun updateStreamTitle(token: String, title: String): Boolean = withContext(Dispatchers.IO) {
+        val json = JSONObject().apply {
+            put("title", title)
+            put("token", token) // ✅ token en body (obligatorio)
+        }
+
+        val req = Request.Builder()
+            .url(updateStreamTitleUrl)
+            .post(json.toString().toRequestBody(jsonMedia))
+            .build()
+
+        client.newCall(req).execute().use { res ->
+            val body = res.body?.string().orEmpty()
+            Log.d("JETSON", "update_stream_title HTTP=${res.code} body=$body")
+            parseOrThrow(res.code, body, "/update_stream_title")
+            true
+        }
+    }
+
+
 
     suspend fun startCams(): Boolean = withContext(Dispatchers.IO) {
         val req = Request.Builder().url(startCamsUrl).post(emptyJsonBody()).build()
@@ -236,6 +260,7 @@ class JetsonApi(
         val req = Request.Builder().url(startStreamWizardUrl).post(emptyJsonBody()).build()
         client.newCall(req).execute().use { res ->
             val body = res.body?.string().orEmpty()
+            Log.d("JETSON", "start_streaming_full HTTP=${res.code} body=$body")
             parseOrThrow(res.code, body, "/start_streaming_full?type=wizard")
             true
         }

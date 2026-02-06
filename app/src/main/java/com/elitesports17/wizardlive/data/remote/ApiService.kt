@@ -2,6 +2,7 @@ package com.elitesports17.wizardlive.data.remote
 
 import com.elitesports17.wizardlive.data.model.*
 import retrofit2.http.*
+import retrofit2.Response
 
 interface ApiService {
 
@@ -37,6 +38,8 @@ interface ApiService {
     suspend fun getMyProfile(
         @Header("Authorization") auth: String
     ): ProfileMeResponse
+
+
 
 
 }

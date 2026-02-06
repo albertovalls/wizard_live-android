@@ -136,7 +136,7 @@ fun BottomBar(
                 )
             )
 
-            if (role != "viewer") {
+
                 NavigationBarItem(
                     selected = currentRoute == Screen.Broadcast.route,
                     onClick = {
@@ -166,7 +166,7 @@ fun BottomBar(
                         indicatorColor = Color.Transparent
                     )
                 )
-            }
+
 
 
             NavigationBarItem(

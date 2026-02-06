@@ -46,7 +46,7 @@ fun SportsScreen(
             .getRole(context) ?: "viewer"
     }
     Scaffold(
-        topBar = { TopHeader() }, // ✅ MISMO HEADER QUE HOME
+        topBar = { TopHeader() },
         bottomBar = { BottomBar(navController, role) },
         containerColor = Color.Black
     ) { padding ->

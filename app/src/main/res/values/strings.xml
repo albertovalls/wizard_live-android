@@ -85,6 +85,41 @@
     <string name="events_action_view">Ver</string>
     <!-- Sports names -->
 
+    <string name="nav_back">Atrás</string>
+
+    <string name="perf_warning_title">Aviso de rendimiento</string>
+    <string name="perf_warning_body">Activar la preview puede bajar el rendimiento y el FPS. Úsala solo cuando sea necesario.</string>
+    <string name="perf_warning_enabling">Activando…</string>
+    <string name="perf_warning_confirm">Entendido, activar</string>
+
+
+    <string name="wizcam_detected">Wizcam detectada</string>
+    <string name="account_at">Cuenta: @%1$s</string>
+    <string name="wizard_account_not_configured">Cuenta Wizard no configurada</string>
+
+    <string name="preview">PREVIEW</string>
+    <string name="stopping">Parando…</string>
+    <string name="hide">Ocultar</string>
+
+    <string name="preview_disabled">Preview desactivada</string>
+    <string name="preview_disabled_hint">Oculta por defecto para ahorrar recursos.</string>
+    <string name="view_preview">Ver preview</string>
+
+    <string name="battery">Batería</string>
+    <string name="temp">Temp</string>
+    <string name="wizard_status">Wizard: %1$s</string>
+
+    <string name="starting">Empezando…</string>
+    <string name="connecting">Conectando…</string>
+    <string name="live_now">En directo</string>
+    <string name="start_live">Empezar directo</string>
+    <string name="stop">Parar</string>
+
+    <string name="wizard_live">Wizard Live</string>
+    <string name="streaming_and_preview">Streaming y preview</string>
+
+    <string name="wizcam_not_detected">No detecto la Wizcam</string>
+    <string name="connect_to_wizcam_wifi">Conéctate al WiFi de la Wizcam</string>
     <string name="basketball">Baloncesto</string>
     <string name="tennis">Tenis</string>
     <string name="boxing">Boxeo</string>
@@ -119,7 +154,21 @@
     <string name="live_streaming">Streaming en directo</string>
     <string name="cancel">Cancelar</string>
     <string name="nav_broadcast">Emitir</string>
+    <string name="wizcam_offline_title">WizCam no detectada</string>
+    <string name="wizcam_offline_body">Si ya tienes WizCam, conéctate a la red Wi-Fi de tu WizCam para continuar.</string>
+    <string name="wizcam_offline_tip">Consejo: abre Ajustes &gt; Wi-Fi y selecciona la red de tu WizCam.</string>
+    <string name="wizcam_offline_no_device">¿Aún no tienes WizCam?</string>
+    <string name="wizcam_offline_buy_button">Comprar WizCam</string>
 
+    <string name="preview_label">VISTA PREVIA</string>
+    <string name="preview_load_failed">No se pudo cargar la vista previa. Inténtalo de nuevo.</string>
+    <string name="wizcam_offline_have_title">¿Ya tienes una WizCam?</string>
+    <string name="wizcam_offline_have_body">Conéctate a la red Wi-Fi de tu WizCam para continuar.</string>
+
+    <string name="wizcam_offline_open_wifi_button">Abrir ajustes de Wi-Fi</string>
+
+    <string name="wizcam_offline_no_device_title">¿Aún no tienes WizCam?</string>
+    <string name="wizcam_offline_no_device_body">Consigue tu WizCam para empezar a emitir con Wizard Live.</string>
 
     <string name="viewers_now">%1$d viendo ahora</string>
     <string name="connection_connected">🟢 Conectado</string>
